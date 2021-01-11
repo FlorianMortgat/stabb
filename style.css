@@ -1,0 +1,21 @@
+div.stabb.parent {
+    /* display: flex; */
+}
+
+.stabb .scene {
+    /* width: 800px; */
+    /* height: 600px; */
+    background: black;
+}
+
+.stabb .edit {
+    /* width: 500px; */
+    /* height: 1200px; */
+    background: yellow;
+}
+
+.stabb .info {
+    /* width: 800px; */
+    /* height: 600px; */
+    background: blue;
+}

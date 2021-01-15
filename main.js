@@ -32,15 +32,17 @@ let app = {
         this.ctx.fillRect(1, 1, this.canvas.width, this.canvas.height);
     },
     leftclick(x, y) {
-        this.player.retarget(x, y);
+        this.player.destination(x, y);
     },
     rightclick(x, y) {
-        this.player.teleport(x, y);
+        this.player.téléporter(x, y);
     },
     main() {
         this.clear();
-        this.player.draw();
-        this.player.move();
+        this.players.forEach((p) => {
+            p.draw();
+            p.move();
+        });
         this.i++;
         if (this.i > 1000000) {
             window.clearInterval(this.pid);
@@ -49,24 +51,21 @@ let app = {
             this.player.draw();
         }
     },
-    run() {
-        this.i = 0;
-        let running = true;
+    newPlayer(color = 'green') {
         let self = this;
-        let f = Math.floor;
-        this.player = window.player = {
-            x: 40,
-            y: 40,
+        return {
+            x: self.canvas.width / 2,
+            y: self.canvas.height / 2,
             w: 10,
             h: 10,
-            targetX: Math.random() * this.canvas.width,
-            targetY: Math.random() * this.canvas.height,
+            targetX: Math.random() * self.canvas.width,
+            targetY: Math.random() * self.canvas.height,
             speed: 1.5,
-            color: 'green',
+            color: color,
             draw() {
                 // console.log(this.x, this.y);
                 self.ctx.fillStyle = this.color;
-                self.ctx.fillRect(f(this.x - this.w / 2), f(this.y - this.h / 2), this.w, this.h);
+                self.ctx.fillRect(Math.floor(this.x - this.w / 2), Math.floor(this.y - this.h / 2), this.w, this.h);
             },
             move() {
                 if (!this.speed) return;
@@ -85,23 +84,42 @@ let app = {
                 this.x += speedX;
                 this.y += speedY;
             },
-            retarget(x, y) {
+            destination(x, y) {
                 this.targetX = x;
                 this.targetY = y;
             },
-            teleport(x, y) {
+            téléporter(x, y) {
                 this.x = x;
                 this.y = y;
             },
         };
+    },
+    selectPlayer(i) {
+        return this.player = window.joueur = this.players[i % this.players.length];
+    },
+    // TODO: détection des collisions / des distances pour permettre interactions entre objets
+    // TODO: passer les noms de variables exposées en français ☺
+    run() {
+        this.i = 0;
+        let running = true;
+        let self = this;
+        this.players = window.players = [
+            this.newPlayer('green'),
+            this.newPlayer('red'),
+            this.newPlayer('blue'),
+        ];
+        this.selectPlayer(0);
         this.pid = window.setInterval(() => this.main(), 25);
     },
-
+    stop() {
+        window.clearInterval(this.pid);
+    },
 };
 
 function main() {
     app.init(document.body);
     app.run();
+    window.sélectionnerJoueur = i => app.selectPlayer(i);
     // 1) construction interface de base
     // 2) composant canvas
     // 3) modulaire?? non, au début je code tout en dur.

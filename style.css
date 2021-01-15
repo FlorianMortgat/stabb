@@ -1,6 +1,7 @@
 html, body {
     padding: 0;
     margin: 0;
+    font-family: sans-serif;
 }
 
 div.stabb.parent {
@@ -8,11 +9,17 @@ div.stabb.parent {
     height: 100vh;
 }
 
+.stabb .scene_and_info {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 /*
 Container section for the scene
  */
 .stabb .scene_c {
-    width: 50%; 
     height: 50%;
     background: green;
 }
@@ -30,15 +37,25 @@ the scene itself;
 Editor section
  */
 .stabb .edit {
-    background: yellow;
-    width: 50%; 
+    background: floralwhite;
+    width: 50%;
 }
 
 /*
 Info section
  */
 .stabb .info {
-    width: 50%;
     height: 50%;
-    background: blue;
+    background: dimgray;
+    color: lightblue;
+}
+.stabb .info > div {
+    padding: 2em;
+    overflow-y: auto;
+    max-height: 43vh;
+}
+.stabb .info pre {
+    background: black;
+    padding: 1em;
+    border: solid 1px green;
 }

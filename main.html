@@ -5,10 +5,42 @@
 </head>
 <body>
 <div class="stabb parent">
-    <section class="scene_c"></section>
-    <section class="info"></section>
-    <section class="edit"></section>
+    <section class="scene_and_info">
+        <section class="scene_c">
+            <!--Conteneur pour la scène-->
+        </section>
+        <section class="info">
+            <!--Conteneur pour le texte informatif (descriptif de l'exercice)-->
+            <div>
+                <h1>Pour commencer</h1>
+                <p>Pour démarrer, appuie sur la touche F12 du clavier. Ça fera apparaître un panneau dans le navigateur
+                    (Firefox ou Chrome).
+                    Ce panneau doit avoir un onglet "Console". Clique dessus : tu vas pouvoir commencer à coder dans
+                    cette console.</p>
+                <p>
+                    Pour le moment, le code ne va pas être trop compliqué. On va juste demander au point vert de se
+                    déplacer à un endroit différent de l’écran.
+                </p>
+                <p>
+                    Pour ça, dans la console, tape :
+                </p>
+                <pre>player.retarget(15, 15)</pre>
+                <p>puis appuie sur Entrée.</p>
+                <p>Cette commande a donné pour instruction au "joueur" (player) représenté par le carré vert de se
+                déplacer aux coordonnées 15, 15 (c'est à dire au point qui démarre à 15 pixels depuis la gauche et
+                à 15 pixels depuis le haut).</p>
+                <p>Recommence : que se passe-t-il si tu choisis d'autres chiffres ?</p>
+                <p>Recommence : que se passe-t-il si tu mets autre chose que des chiffres ?</p>
+            </div>
+        </section>
+    </section>
+    <section class="edit">
+        <!--Conteneur pour l'éditeur de pseudo-code / de code-->
+    </section>
 </div>
+<textarea style="display: none" id="stabb_content">
+    
+</textarea>
 </body>
 <script type="application/javascript" src="jquery.js"></script>
 <script type="application/javascript" src="main.js"></script>

@@ -36,26 +36,39 @@ the scene itself;
 /*
 Editor section
  */
-.stabb .edit {
+.stabb .info_level {
     background: floralwhite;
     width: 50%;
+    max-height: 100vh;
+}
+
+.stabb .info_level > div {
+    padding: 2em;
+    overflow-y: auto;
 }
 
 /*
 Info section
  */
-.stabb .info {
+.stabb .info_globale {
     height: 50%;
     background: dimgray;
     color: lightblue;
 }
-.stabb .info > div {
+.stabb .info_globale > div {
     padding: 2em;
     overflow-y: auto;
     max-height: 43vh;
 }
-.stabb .info pre {
+
+
+/*
+Code
+ */
+.stabb pre {
     background: black;
-    padding: 1em;
+    padding: 1.5em 1em;
     border: solid 1px green;
+    border-radius: 3px;
+    color: lightblue;
 }

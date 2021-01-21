@@ -14,7 +14,9 @@ déplacer à un endroit différent de l’écran.
 
 Pour ça, dans la console, tape :
 
-```joueur.destination(15, 15)```
+```
+joueur.destination(15, 15)
+```
 
 puis appuie sur Entrée.
 

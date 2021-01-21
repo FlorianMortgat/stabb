@@ -127,6 +127,7 @@ let distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 
 
 let app = {
     refreshRate: 25,
+    assetDir: 'assets',
     init(root) {
         this.root = root;
         this.scene = root.querySelector('.stabb .scene_c');
@@ -189,9 +190,9 @@ let app = {
         let running = true;
         let self = this;
         this.players = window.players = [
-            new Player(this, 'hero.png', self.canvas.width / 2, self.canvas.height / 2, Math.random() * self.canvas.width, Math.random() * self.canvas.height, 2),
-            new Player(this, 'ennemy.png', self.canvas.width / 2, self.canvas.height / 2, Math.random() * self.canvas.width, Math.random() * self.canvas.height, 1.5),
-            new Player(this, 'ennemy.png', self.canvas.width / 2, self.canvas.height / 2, Math.random() * self.canvas.width, Math.random() * self.canvas.height),
+            new Player(this, this.assetDir + '/hero.png', self.canvas.width / 2, self.canvas.height / 2, Math.random() * self.canvas.width, Math.random() * self.canvas.height, 2),
+            new Player(this, this.assetDir + '/ennemy.png', self.canvas.width / 2, self.canvas.height / 2, Math.random() * self.canvas.width, Math.random() * self.canvas.height, 1.5),
+            new Player(this, this.assetDir + '/ennemy.png', self.canvas.width / 2, self.canvas.height / 2, Math.random() * self.canvas.width, Math.random() * self.canvas.height),
             //this.newPlayer('green'),
             //this.newPlayer('red'),
             //this.newPlayer('blue'),

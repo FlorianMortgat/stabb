@@ -25,7 +25,12 @@ ob_start();
 if (!empty($get)) {
 	switch ($get) {
 		case 'level':
-			_g_level($db);
+			if (!isset($_GET['level'])) failureResponse('Specify level (int)');
+			$level = $_GET['level'];
+			if (!preg_match('/\d+/', $level)) {
+				failureResponse('Level must be numeric');
+			}
+			_g_level($level);
 			break;
 		default:
 			__unhandled($get);
@@ -33,65 +38,27 @@ if (!empty($get)) {
 	}
 } elseif (!empty($post)) {
 	switch ($post) {
-		case 'time-spent':
-			_p_timeSpent($db);
-			break;
-		case 'delete-time-spent':
-			_p_deleteTimeSpent($db);
-			break;
 		default:
 			__unhandled($post);
 	}
 }
 
-
-/**
- * Renvoie (ajax) une structure avec les projets du mois et les temps saisis par
- * l’utilisateur sur le mois.
- * @param $db
- */
-function _g_monthData($db)
-{
-	global $user;
-	$out = array();
-	$year = intval(GETPOST('year', 'int'));
-	$month = intval(GETPOST('month', 'int'));
-	$out['projects'] = _getProjectsForUser($db, $user);
-	$out['loggedTimes'] = _getLoggedTimesForMonth($db, $year, $month);
-	successResponse($out);
+function _g_level($levelNumber) {
+	$filename = 'assets/levels/level' . $levelNumber . '.md';
+	if (filesize($filename) > 1024*100) {
+		failureResponse('The requested level file is suspiciously large (>100kB)');
+	} 
+	successResponse(array(file_get_contents($filename)));
 }
 
-/**
- * Renvoie (ajax) une structure avec les temps saisis par l'utilisateur sur la
- * journée (année mois jour passés par la requête HTTP)
- * @param $db
- */
-function _g_dayData($db)
-{
-	global $user;
-	$out = array();
-	$year = intval(GETPOST('year', 'int'));
-	$month = intval(GETPOST('month', 'int'));
-	$day = intval(GETPOST('day', 'int'));
-	$out['loggedTimes'] = _getLoggedTimesForDay($db, $year, $month, $day);
-	successResponse($out);
-}
-
-/**
- * Returns an injection-safe quoted version of the string.
- * @param $db
- * @param $str
- * @return string
- */
-function __quote($db, $str)
-{
-	return '"' . $db->escape($str) . '"';
+function __unhandled($post) {
+	failureResponse('Unhandled');
 }
 
 /**
  * Wraps the payload in a json structure, prints it out and exits.
  *
- * @param array $payload Whatever the client-side code asked for
+ * @param mixed $payload Whatever the client-side code asked for
  */
 function successResponse($payload)
 {

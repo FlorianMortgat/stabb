@@ -21,7 +21,7 @@ Container section for the scene
  */
 .stabb .scene_c {
     height: 50%;
-    background: green;
+    background: black;
 }
 
 /*
@@ -71,4 +71,19 @@ Code
     border: solid 1px green;
     border-radius: 3px;
     color: lightblue;
+}
+
+
+#endgame_msg {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    font-size: 200%;
+    font-weight: bold;
+}
+
+#endgame_msg.visible {
+    display: block;
 }

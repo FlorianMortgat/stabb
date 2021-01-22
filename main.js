@@ -1,3 +1,11 @@
+
+
+// TODO:
+//  - créer une classe Animation distincte de la classe Player
+//  - créer une classe Drawable qui sera le parent de Player et StaticObject
+//  - renommer Player en Character
+//  - créer une classe Collidable pour paramétrer les primitives 
+
 class StaticObject {
     constructor(app, png, x, y, width, height) {
         this.app = app;
@@ -199,11 +207,15 @@ let app = {
         $(this.canvas).appendTo($(this.scene));
     },
     initCanvasSize() {
+        // if (this.stopped) return;
+        console.log(this.ctx.fillStyle);
         this.canvas.width = $('.scene_c').width();
         this.canvas.height = $('.scene_c').height();
         this.rect = this.canvas.getBoundingClientRect();
+        this.clear();
     },
-    clear(color = 'black') {
+    clear(color) {
+        if (color === undefined) color = this.ctx.fillStyle;
         this.ctx.fillStyle = color;
         this.ctx.fillRect(1, 1, this.canvas.width, this.canvas.height);
     },
@@ -214,6 +226,7 @@ let app = {
     //     this.player.téléporter(x, y);
     // },
     main() {
+        this.ctx.fillStyle = '#222';
         let now = Date.now();
         this.clear();
         this.detectCollisions();
@@ -228,9 +241,8 @@ let app = {
 
         this.i++;
         if (this.i > 10000000) {
-            this.stop();
+            this.finish('Fini', 'black');
             console.log('the end');
-            this.clear();
         }
     },
     // selectPlayer(i) {
@@ -254,8 +266,8 @@ let app = {
         this.characters = window.characters = [this.protagonist];
         this.characters.push(...this.ennemies);
 
-        this.key = new StaticObject(this, this.assetDir + '/key.png', 350, 56, 32, 17);
-        this.door = new StaticObject(this, this.assetDir + '/door.png', 45, 306, 64, 64);
+        this.key = new StaticObject(this, this.assetDir + '/key.png', 350, 56, 74, 20);
+        this.door = new StaticObject(this, this.assetDir + '/door.png', 45, 306, 90, 125);
         window.clé = this.key;
         window.porte = this.door;
         window.joueur = this.protagonist;
@@ -295,11 +307,7 @@ let app = {
     detectCollisions() {
         this.ennemies.forEach((e) => {
             if (this.hasCollision(this.protagonist, e)) {
-                setTimeout(() => {
-                    console.log('perdu');
-                    this.stop();
-                    this.clear('red');
-                }, 0);
+                this.finish('Perdu', 'red');
             }
         });
         let playerHasKey = this.protagonist.items.some((i) => i === this.key);
@@ -309,11 +317,7 @@ let app = {
         }
         console.log(playerHasKey);
         if (playerHasKey && this.hasCollision(this.protagonist, this.door)) {
-            setTimeout(() => {
-                console.log('gagné');
-                this.stop();
-                this.clear('white');
-            }, 0);
+            this.finish('Gagné', 'white');
         }
         // this.collisionPairs.forEach((pair) => {
         //     if (distance(pair.a.x, pair.a.y, pair.b.x, pair.b.y) < 25) {
@@ -322,7 +326,19 @@ let app = {
         // });
     },
     stop() {
+        this.stopped = true;
         window.clearInterval(this.pid);
+    },
+    finish(message, bg) {
+        window.setTimeout(() => {
+            let endDiv = document.querySelector('#endgame_msg');
+            endDiv.innerHTML = message;
+            endDiv.classList.toggle('visible');
+
+            this.stop();
+            this.clear(bg);
+            
+        }, 0);
     },
 };
 

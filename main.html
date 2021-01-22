@@ -8,6 +8,7 @@
 <div class="stabb parent">
     <section class="scene_and_info">
         <section class="scene_c">
+            <div id="endgame_msg"></div>
             <!--Conteneur pour la scène-->
         </section>
         <section class="info_globale">
@@ -24,30 +25,36 @@
                 Ce panneau doit avoir un onglet "Console". Clique dessus : tu vas pouvoir commencer à coder dans
                 cette console.</p>
             <p>
-                Pour le moment, le code ne va pas être trop compliqué. On va juste demander au point vert de se
-                déplacer à un endroit différent de l’écran.
+                Le but du jeu est de faire sortir le joueur (la bille verte) par la porte en prenant d’abord la clé,
+                et ce avant que les ennemis (les billes rouges) ne le rattrapent. </p>
+            
+            <p>Si jamais tu perds (écran rouge), tu peux recommencer autant de fois que tu veux en rechargeant la
+                page (F5). </p>
+            
+            <p>
+                Pour le moment, le code ne va pas être trop compliqué.
             </p>
             <p>
-                Pour ça, dans la console, tape :
+                Dans la console, tape (ou copie-colle) :
             </p>
-            <pre>joueur.allerVersClé()</pre>
-            <p>puis appuie sur Entrée.</p>
-            <p>Cette commande a donné pour instruction au "joueur" (player) représenté par le rond vert de se
-                déplacer aux coordonnées 15, 15 (c'est à dire au point qui démarre à 15 pixels depuis la gauche et
-                à 15 pixels depuis le haut).</p>
-            <p>Recommence : que se passe-t-il si tu choisis d'autres chiffres ?</p>
-            <p>Recommence : que se passe-t-il si tu mets autre chose que des chiffres ?</p>
+            <pre>joueur.allerVersClé();</pre>
 
-            <pre>joueur.allerVersPorte()                
-joueur.téléporter(150, 200)
-sélectionnerJoueur(2)
-</pre>
+            <p>puis appuie sur Entrée. C’est important de ne faire aucune faute de frappe, y compris dans les majuscules
+            et les minuscules.</p>
 
+            <p>Cette commande a donné pour instruction au joueur (représenté par le rond vert) de se
+                déplacer vers la clé.</p>
+            
+            <p>Une fois que le joueur a pris la clé :</p>
 
-            <p>Essaye ça :</p>
+            <pre>joueur.allerVersPorte();</pre>
+            
+            <p>Lorsque le joueur aura atteint la porte, tu auras gagné et le code du niveau 1 s’affichera.</p>
+
+          <!--  <p>Essaye ça :</p>
             <pre>joueur.attaquerEnnemi()</pre>
             <p>Tu obtiens un message d'erreur. À ton avis, pourquoi ? Pourquoi certaines commandes marchent et
-                pas d’autres ?</p>
+                pas d’autres ?</p> -->
         </div>
     </section>
 </div>

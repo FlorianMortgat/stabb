@@ -2,17 +2,17 @@
 
 // pour le débuggage : affichage des erreurs + formatage du JSON
 define('JSON_FLAGS', 0);
-define('DEBUGGING', false);
-
-
-$get  = $_GET['get'];
-$post = $_POST['post'];
+define('DEBUGGING', true);
 
 // Mute PHP to prevent any unwanted output (such as warnings from core methods) from polluting the JSON response.
 // the only way out of this script should be the function `response()` which takes
 // care of closing the output buffer.
 // `response()` will also include the silenced content into the response (for analysis) if DEBUGGING is true.
 ob_start();
+
+$get  = $_GET['get'] ?? '';
+$post = $_POST['post'] ?? '';
+
 
 
 /**

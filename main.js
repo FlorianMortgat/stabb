@@ -259,38 +259,82 @@ class Player {
 
 let distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
+/**
+ * @var {Object} window.$
+ */
 
-let app = {
-    refreshRate: 25,
+window.app = {
+    refreshInterval: 25,
     assetDir: 'assets',
     ready: false,
+    installLevel(level) {
+        this.level = level;
+        this.level.initLevel(this);
+    },
     init(root) {
         this.root = root;
         this.scene = root.querySelector('.stabb .scene_c');
-        this.info = root.querySelector('.stabb .info');
-        this.edit = root.querySelector('.stabb .edit');
+        this.info = root.querySelector('.stabb .info_level');
+        this.gamelog = root.querySelector('.stabb .game_log');
+        this.level = window.level = {};
 
         this.canvas = document.createElement('canvas');
         this.canvas.addEventListener('mousedown', e => {
             let x = e.clientX - this.rect.left;
             let y = e.clientY - this.rect.top;
-            //if (e.button === 0) this.leftclick(x, y);
-            //else if (e.button === 2) this.rightclick(x, y);
+            if (e.button === 0) {
+                // left mouse button
+                if (this.level.leftclick) {
+                    this.level.leftclick(x, y);
+                }
+            } else if (e.button === 2) {
+                if (this.level.rightclick) {
+                    this.level.rightclick(x, y);
+                }
+            }
         });
-        let ctx = this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d');
         this.initCanvasSize();
-        window.addEventListener('resize', () => this.initCanvasSize());
+        // window.addEventListener('resize', () => {
+        //     // this.initCanvasSize();
+        // });
         // empêcher le clic droit d'ouvrir le menu contextuel sur le canvas.
-        this.canvas.addEventListener('contextmenu', (ev) => {
+        this.canvas.addEventListener(
+            'contextmenu',
+            (ev) => {
             ev.preventDefault();
             return false;
-        })
+        });
         $(this.canvas).appendTo($(this.scene));
+
+        $.get('interface.php?get=levels', (data) => {
+            this.levels = data.payload;
+            this.currentLevel = 0;
+            this.loadLevel(0);
+        });
+    },
+    loadLevel(index = 0) {
+        $.get('interface.php?get=' + this.levels[index], (data) => {
+            let html = window.markdownConverter.makeHtml(data.payload.text);
+            $('.stabb .info_level > div').html(html);
+            if (data.payload.js) {
+                let scriptTag = document.createElement('script');
+                scriptTag.type = 'application/javascript';
+                scriptTag.src = data.payload.js;
+                document.body.appendChild(scriptTag);
+            }
+            this.ready = true;
+        });
+    },
+    nextLevel() {
+        this.loadLevel(++this.currentLevel);
     },
     initCanvasSize() {
         // if (this.stopped) return;
-        this.canvas.width = $('.scene_c').width();
-        this.canvas.height = $('.scene_c').height();
+        // this.canvas.width = $('.scene_c').width();
+        // this.canvas.height = $('.scene_c').height();
+        this.canvas.width = 700;
+        this.canvas.height = 525;
         this.rect = this.canvas.getBoundingClientRect();
         this.clear();
     },
@@ -300,139 +344,77 @@ let app = {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         //randomDots('#353535', 1000);
     },
-    // leftclick(x, y) {
-    //     this.player.destination(x, y);
-    // },
-    // rightclick(x, y) {
-    //     this.player.téléporter(x, y);
-    // },
-    main() {
+    /**
+     * Fonction "boucle principale" qui est appelée toutes les 25 millisecondes
+     * (intervalle configurable avec this.refreshInterval).
+     */
+    update() {
         if (!this.ready) return;
         this.ctx.fillStyle = '#222';
-        let now = Date.now();
+        let now = Date.now(); // TODO: se débarrasser du now (toutes les durées seront calculées
+                              //       en fonction de this.refreshRate)
         this.clear();
-        this.detectCollisions();
-
-        if (!this.protagonist.alive()) {
-            this.finish('Perdu !', 'red');
-        }
+        this.detectEnnemyCollisions();
+        
+        // hook pour les niveaux
+        this.level.update(this);
 
         // make all characters move
         this.characters.forEach((p) => p.update(now));
+
         // draw all drawable objects
         this.drawable.forEach((o) => o.draw(this.ctx));
 
-        if (this.i % 10 === 0) {
-            this.ennemies.forEach((e) => e.destination(this.protagonist.x, this.protagonist.y));
-        }
-
         this.i++;
         if (this.i > 10000000) {
-            this.finish('Fini', 'black');
+            this.finish('Fini');
         }
     },
-    // selectPlayer(i) {
-    //     return this.player = window.joueur = this.players[i % this.players.length];
-    // },
 
-
-    prepare() {
+    setupLevel() {
         this.i = 0;
-        let running = false;
-        let self = this;
-        this.protagonist = new Player(
+
+        let endDiv = document.querySelector('#stabb .finish_msg');
+        endDiv.innerText = '';
+        endDiv.classList.remove('visible');
+        console.log('setupLevel()', endDiv.classList);
+
+        window.joueur = this.protagonist = new Player(
             this,
             this.assetDir + '/hero.png',
-            self.canvas.width / 2,
-            self.canvas.height / 2,
-            Math.random() * self.canvas.width,
-            Math.random() * self.canvas.height,
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            this.canvas.width / 2,
+            this.canvas.height / 2,
             2,
             'Héros'
         );
-        let ennemyCount = 2;
+
         this.ennemies = [];
-        for (let i = 0; i < ennemyCount; i++) {
-            let ennemy = new Player(
-                this,
-                this.assetDir + '/ennemy.png',
-                500,
-                Math.random() * 300,
-                0,
-                0,
-                prng.nextInt(1,10) / 10,
-                'Ennemi ' + (i+1)
-            );
-            ennemy.hp = prng.nextInt(5,20);
-            ennemy.initialhp = ennemy.hp;
-            console.log(ennemy.hp, ennemy.initialhp);
-            this.ennemies.push(ennemy);
-        }
+        this.drawable = [];
 
         // characters = protagonist + ennemies
         this.characters = window.characters = [];
+
+        this.level.setupLevel(this);
+
         this.characters.push(...this.ennemies);
         this.characters.push(this.protagonist);
-
-        this.key = new StaticObject(this, this.assetDir + '/key.png', 350, 56, 74, 20, 'clé');
-        this.door = new StaticObject(this, this.assetDir + '/door.png', 45, 306, 90, 125, 'porte');
-        window.clé = this.key;
-        window.porte = this.door;
-        window.joueur = this.protagonist;
-
-        this.drawable = [this.key, this.door];
         this.drawable.push(...this.characters);
-
-        $.get('interface.php?get=levels', (data) => {
-            this.levels = data.payload;
-            $.get('interface.php?get=' + this.levels[0], (data) => {
-                let html = window.markdownConverter.makeHtml(data.payload.text);
-                $('.stabb .info_level > div').html(html);
-                if (data.payload.js) {
-                    let scriptTag = document.createElement('script');
-                    scriptTag.type = 'application/javascript';
-                    scriptTag.src = data.payload.js;
-                    document.body.appendChild(scriptTag);
-                }
-                this.ready = true;
-            });
-        });
+        // first update to show the "paused" game
+        window.setTimeout (() => this.update(), this.refreshInterval);
     },
 
     // TODO: passer les noms de variables exposées en français ☺
     run() {
-        this.pid = window.setInterval(() => this.main(), this.refreshRate);
-        // this.collidable = [this.protagonist];
-        // this.collidable.push(...this.ennemies);
-        // this.collidable.push(this.key);
-        // this.collidable.push(this.door);
-
-        // there is certainly a better way to make unique pairs
-        // this.collidable.forEach( (objA, objA_i) => {
-        //     for (let objB_i = 0; objB_i < this.collidable.length; objB_i++) {
-        //         if (objA_i === objB_i) continue;
-        //         pairId = '' + objA_i + '_' + objB_i;
-        //         if (this.collisionPairs[pairId]) continue;
-        //         pairId = '' + objB_i + '_' + objA_i;
-        //         if (this.collisionPairs[pairId]) continue;
-        //         let objB = this.collidable[objB_i];
-        //         this.collisionPairs[pairId] = {
-        //             a: objA,
-        //             b: objB,
-        //             collided: false,
-        //         };
-        //         this.collisionPairs.order.push(pairId);
-        //     }
-        // });
-
-        // this.selectPlayer(0);
+        this.pid = window.setInterval(() => this.update(), this.refreshInterval);
     },
     hasCollision(a, b) {
         return distance(a.x, a.y, b.x, b.y)
                <
                a.width / 2 - a.spriteMargin + b.width / 2 - b.spriteMargin;
     },
-    detectCollisions() {
+    detectEnnemyCollisions() {
         this.protagonist.isInCollision = false;
         this.ennemies.forEach((e) => {
             if (!e.alive()) return;
@@ -446,14 +428,6 @@ let app = {
                 }
             }
         });
-        let playerHasKey = this.protagonist.items.some((i) => i === this.key);
-        if (!playerHasKey && this.hasCollision(this.protagonist, this.key)) {
-            this.drawable = this.drawable.filter((i) => i !== this.key);
-            this.protagonist.items.push(this.key);
-        }
-        if (playerHasKey && this.hasCollision(this.protagonist, this.door)) {
-            this.finish('Gagné ! Le code est "' + decode('WSXVWZ') + '"', 'white');
-        }
         // this.collisionPairs.forEach((pair) => {
         //     if (distance(pair.a.x, pair.a.y, pair.b.x, pair.b.y) < 25) {
         //         pair.collided = true;
@@ -464,17 +438,11 @@ let app = {
         this.stopped = true;
         window.clearInterval(this.pid);
     },
-    finish(message, bg) {
-        window.setTimeout(() => {
-            let endDiv = document.createElement('div');
-            endDiv.id = 'endgame_msg';
-            $(endDiv).html('<div class="finish_msg">' + message + '</div>');
-            $(endDiv).appendTo($('.stabb .info_globale'));
-            endDiv.classList.toggle('visible');
-            this.stop();
-            this.clear(bg);
-            
-        }, 0);
+    finish(message) {
+        let endDiv = document.querySelector('#stabb .finish_msg');
+        endDiv.innerText = message;
+        endDiv.classList.add('visible');
+        this.stop();
     },
 
     log(msg) {
@@ -485,7 +453,6 @@ let app = {
 function main() {
     window.markdownConverter = new showdown.Converter();
     app.init(document.body);
-    app.prepare();
     window.jeu = app;
     jeu.démarrer = jeu.run;
     // window.sélectionnerJoueur = i => app.selectPlayer(i);

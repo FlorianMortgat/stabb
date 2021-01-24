@@ -1,7 +1,5 @@
 <?php
 
-require('../config.php');
-
 // pour le débuggage : affichage des erreurs + formatage du JSON
 define('JSON_FLAGS', 0);
 define('DEBUGGING', false);
@@ -23,17 +21,26 @@ ob_start();
  *     - _p_ = 'post' (modifications en base : insert, delete, update…)
  */
 if (!empty($get)) {
+	$funcname = '_g_' . $get;
+	if (function_exists($funcname)) call_user_func($funcname);
+	if (preg_match('/^level\d+$/', $get, $m)) {
+		_g_level($m[0]);
+	}
 	switch ($get) {
 		case 'level':
 			if (!isset($_GET['level'])) failureResponse('Specify level (int)');
 			$level = $_GET['level'];
-			if (!preg_match('/\d+/', $level)) {
+			if (!preg_match('/^level\d+$/', $level)) {
 				failureResponse('Level must be numeric');
 			}
 			_g_level($level);
 			break;
 		default:
-			__unhandled($get);
+			if (function_exists('_g_' . $get)) {
+				call_user_func('_g_' . $get);
+			} else {
+				__unhandled($get);
+			}
 			break;
 	}
 } elseif (!empty($post)) {
@@ -43,12 +50,30 @@ if (!empty($get)) {
 	}
 }
 
-function _g_level($levelNumber) {
-	$filename = 'assets/levels/level' . $levelNumber . '.md';
-	if (filesize($filename) > 1024*100) {
-		failureResponse('The requested level file is suspiciously large (>100kB)');
+function _g_level($levelName) {
+	$maxSize = 200*1024; // 200 kB
+	if (preg_match('#[/]|\.\.#', $levelName)) failureResponse('Invalid level name');
+	$mdFilename = 'assets/levels/' . $levelName . '.md';
+	$jsFilename = 'assets/levels/' . $levelName . '.js';
+	if (filesize($mdFilename) + filesize($jsFilename) > $maxSize) {
+		failureResponse('The requested level files are suspiciously large (>100kB)');
 	} 
-	successResponse(array(file_get_contents($filename)));
+	successResponse([
+		'text' => file_get_contents($mdFilename),
+		'js' => (file_exists($jsFilename) ? $jsFilename : null),
+	]);
+}
+
+function _g_levels() {
+	$dir = 'assets/levels';
+	$dirHandle = opendir($dir);
+	$levels = [];
+	while (($file = readdir($dirHandle)) !== false) {
+		if (preg_match('/^(level\d+).md$/', $file, $m)) {
+			$levels[] = $m[1];
+		}
+	}
+	successResponse($levels);
 }
 
 function __unhandled($post) {

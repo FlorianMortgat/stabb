@@ -460,6 +460,7 @@ window.app = {
     },
     detectEnnemyCollisions() {
         this.protagonist.isInCollision = false;
+        let nbAttacksInTurn = 0; // player can attack only once in this loop
         this.ennemies.forEach((e) => {
             if (!e.alive()) return;
             e.isInCollision = false;
@@ -467,7 +468,9 @@ window.app = {
                 this.protagonist.isInCollision = true;
                 e.isInCollision = true;
                 if (this.i % 15 === 0) {
-                    this.protagonist.attackOther(e);
+                    if (!nbAttacksInTurn++) {
+                        this.protagonist.attackOther(e);
+                    }
                     e.attackOther(this.protagonist);
                 }
             }

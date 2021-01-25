@@ -54,3 +54,10 @@ Serais-tu capable, à partir de cet exemple, de programmer la fonction
 `joueur.allerVersÉpée` ?
 
 À toi de jouer !!
+
+Attention : si le héros meurt, le niveau redémarre et la fonction que tu
+as programmée disparait. Dans la console, tu peux utiliser la touche haut pour
+récupérer ce que tu as tapé en dernier et le modifier (c’est l’historique) :
+c’est plus pratique que de tout retaper une deuxième fois.
+
+

@@ -41,11 +41,11 @@ Editor section
     background: floralwhite;
     width: 50%;
     max-height: 100vh;
+    overflow-y: auto;
 }
 
 #stabb .info_level > div {
     padding: 2em;
-    overflow-y: auto;
 }
 
 /*

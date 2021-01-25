@@ -6,7 +6,10 @@
 //  - créer une classe Animation distincte de la classe Player
 //  - créer une classe Drawable qui sera le parent de Player et StaticObject
 //  - renommer Player en Character
-//  - créer une classe Collidable pour paramétrer les primitives 
+//  - créer une classe Collidable pour paramétrer les primitives
+//  - faire en sorte de pouvoir fuir (pour l'instant, en cas de collision
+//    avec un ennemi, un personnage ne peut pas bouger tant que l'ennemi est
+//    vivant.
 
 class StaticObject {
     constructor(app, png, x, y, width, height, name) {
@@ -274,6 +277,7 @@ window.app = {
     refreshInterval: 25,
     assetDir: 'assets',
     ready: false,
+    stopped: true,
     onready: () => {},
     setReady() { return this.ready = true; },
     /**
@@ -338,6 +342,7 @@ window.app = {
         });
     },
     loadLevel(index = 0) {
+        if (!this.stopped) this.stop();
         $.get('interface.php?get=' + this.levels[index], (data) => {
             let html = window.markdownConverter.makeHtml(data.payload.text);
             $('.stabb .info_level > div').html(html);
@@ -451,6 +456,7 @@ window.app = {
 
     // TODO: passer les noms de variables exposées en français ☺
     run() {
+        this.stopped = false;
         this.pid = window.setInterval(() => this.update(), this.refreshInterval);
     },
     hasCollision(a, b) {

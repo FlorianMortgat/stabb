@@ -35,7 +35,7 @@ the scene itself;
 }
 
 /*
-Editor section
+Level instructions section
  */
 #stabb .info_level {
     background: floralwhite;
@@ -47,6 +47,23 @@ Editor section
 #stabb .info_level > div {
     padding: 2em;
 }
+
+#stabb .info_level blockquote {
+    margin-left: 1em;
+    padding: 0.3em 1em;
+    border-left: solid 1px #bbb;
+    background-color: #efefef;
+    font-size: 85%;
+}
+#stabb .info_level :not(pre) > code {
+    display: inline-block;
+    background-color: white;
+    color: #333;
+    padding: 0.1em 0.4em;
+    border: solid 1px #bbb;
+    border-radius: 2px;
+}
+
 
 /*
 Info section

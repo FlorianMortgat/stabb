@@ -4,12 +4,12 @@ html, body {
     font-family: sans-serif;
 }
 
-div.stabb.parent {
+#stabb.parent {
     display: flex; 
     height: 100vh;
 }
 
-.stabb .scene_and_info {
+#stabb .scene_and_info {
     width: 50%;
     height: 100%;
     display: flex;
@@ -19,8 +19,8 @@ div.stabb.parent {
 /*
 Container section for the scene
  */
-.stabb .scene_c {
-    height: 50%;
+#stabb .scene_c {
+    /* height: 50%; */
     background: black;
 }
 
@@ -28,7 +28,7 @@ Container section for the scene
 the scene itself;
  width and height have to be defined as direct attributes (by js) unless we want scaling
  */
-.stabb .scene_c canvas {
+#stabb .scene_c canvas {
     padding: 0;
     margin: 0;
     width: 100%;
@@ -37,13 +37,13 @@ the scene itself;
 /*
 Editor section
  */
-.stabb .info_level {
+#stabb .info_level {
     background: floralwhite;
     width: 50%;
     max-height: 100vh;
 }
 
-.stabb .info_level > div {
+#stabb .info_level > div {
     padding: 2em;
     overflow-y: auto;
 }
@@ -51,10 +51,20 @@ Editor section
 /*
 Info section
  */
-.stabb .game_log {
+#stabb .game_log {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     height: 50%;
     background: dimgray;
     color: lightblue;
+}
+
+#stabb .game_log nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
 }
 
 

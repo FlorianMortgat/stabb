@@ -3,6 +3,8 @@ window.app.installLevel({
     initLevel(app) {
         console.log('Niveau 1');
         app.setupLevel();
+        app.levels.ready = true;
+        app.checkReady();
     },
     setupLevel(app) {
         let ennemyCount = 2;
@@ -68,6 +70,7 @@ window.app.installLevel({
                 + decode('WSXVWZ')
                 + '". Note-le pour prouver que tu as terminé le niveau.'
             );
+            app.setLevelCompleted();
         }
         if (!app.protagonist.alive()) {
             let n = 5;

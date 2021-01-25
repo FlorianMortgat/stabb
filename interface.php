@@ -73,6 +73,7 @@ function _g_levels() {
 			$levels[] = $m[1];
 		}
 	}
+	sort($levels);
 	successResponse($levels);
 }
 

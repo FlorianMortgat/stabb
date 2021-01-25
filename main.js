@@ -24,6 +24,7 @@ class StaticObject {
 
     spritesheetLoaded() {
         this.ready = true;
+        this.app.checkReady();
     };
 
     draw(ctx) {
@@ -155,6 +156,9 @@ class Player {
     }
 
     draw(ctx) {
+        if (!this.ready) {
+            throw 'uninitialized image';
+        }
         if (!this.alive()) return;
         ctx.drawImage(
             this.spritesheet,
@@ -223,6 +227,7 @@ class Player {
 
     spritesheetLoaded() {
         this.ready = true;
+        this.app.checkReady();
     };
 
     destination(x, y) {
@@ -267,12 +272,27 @@ window.app = {
     refreshInterval: 25,
     assetDir: 'assets',
     ready: false,
+    onready: () => {},
+    setReady() { return this.ready = true; },
+    /**
+     * Vérifie que toutes les ressources (images, niveaux) sont chargées avant
+     * de démarrer des actions qui nécessitent ces ressources.
+     */
+    checkReady() {
+        this.levels
+            && this.levels.ready
+            && this.drawable
+            && this.drawable.every((o) => o.ready)
+            && this.setReady()
+            && this.onready();
+    },
     installLevel(level) {
         this.level = level;
         this.level.initLevel(this);
     },
     init(root) {
         this.root = root;
+        this.maxUpdates = 60 * 15 * Math.floor(1000 / this.refreshInterval),
         this.scene = root.querySelector('.stabb .scene_c');
         this.info = root.querySelector('.stabb .info_level');
         this.gamelog = root.querySelector('.stabb .game_log');
@@ -323,11 +343,32 @@ window.app = {
                 scriptTag.src = data.payload.js;
                 document.body.appendChild(scriptTag);
             }
-            this.ready = true;
         });
+
+
+        document.querySelector('#stabb button').removeAttribute('disabled');
+
+        if (this.currentLevel === this.levels.length -1) {
+            document.querySelector('#stabb button.next').setAttribute('disabled', true);
+        }
+
+        if (this.currentLevel === 0) {
+            document.querySelector('#stabb button.prev').setAttribute('disabled', true);
+        }
     },
     nextLevel() {
-        this.loadLevel(++this.currentLevel);
+        this.currentLevel = Math.min(this.levels.length, this.currentLevel + 1);
+        this.loadLevel(this.currentLevel);
+    },
+    prevLevel() {
+        this.currentLevel = Math.max(0, this.currentLevel - 1);
+        this.loadLevel(this.currentLevel);
+    },
+    setLevelCompleted() {
+        this.levels[this.currentLevel].completed = true;
+        if (this.currentLevel < this.levels.length -1) {
+            document.querySelector('#stabb button.next').removeAttribute('disabled');
+        }
     },
     initCanvasSize() {
         // if (this.stopped) return;
@@ -336,7 +377,6 @@ window.app = {
         this.canvas.width = 700;
         this.canvas.height = 525;
         this.rect = this.canvas.getBoundingClientRect();
-        this.clear();
     },
     clear(color) {
         if (color === undefined) color = this.ctx.fillStyle;
@@ -349,11 +389,12 @@ window.app = {
      * (intervalle configurable avec this.refreshInterval).
      */
     update() {
-        if (!this.ready) return;
+        if (!this.ready) throw 'update while not ready';
         this.ctx.fillStyle = '#222';
         let now = Date.now(); // TODO: se débarrasser du now (toutes les durées seront calculées
                               //       en fonction de this.refreshRate)
         this.clear();
+        // randomDots('#232', 5000, 2);
         this.detectEnnemyCollisions();
         
         // hook pour les niveaux
@@ -365,9 +406,9 @@ window.app = {
         // draw all drawable objects
         this.drawable.forEach((o) => o.draw(this.ctx));
 
-        this.i++;
-        if (this.i > 10000000) {
-            this.finish('Fini');
+        if (this.i++ > this.maxUpdates) {
+            // pour soulager le CPU si on n'est pas sur le jeu
+            this.finish('Fini (délai maximum dépassé)');
         }
     },
 
@@ -377,7 +418,6 @@ window.app = {
         let endDiv = document.querySelector('#stabb .finish_msg');
         endDiv.innerText = '';
         endDiv.classList.remove('visible');
-        console.log('setupLevel()', endDiv.classList);
 
         window.joueur = this.protagonist = new Player(
             this,
@@ -401,8 +441,8 @@ window.app = {
         this.characters.push(...this.ennemies);
         this.characters.push(this.protagonist);
         this.drawable.push(...this.characters);
-        // first update to show the "paused" game
-        window.setTimeout (() => this.update(), this.refreshInterval);
+        // first update to show the "paused" game (once the assets are loaded)
+        this.onready = () => this.update();
     },
 
     // TODO: passer les noms de variables exposées en français ☺
@@ -518,14 +558,14 @@ let prng = new GeneFiboPRNG();
 Array.prototype.choice = function () {
     return this[prng.nextInt(0, this.length - 1)];
 };
-randomDots = (color='#000', x = 5000) => {
+randomDots = (color='#000', x = 5000, size = 1) => {
     for (let i = 0; i < x; i++) {
         app.ctx.fillStyle = color;
         app.ctx.fillRect(
             prng.nextInt(1, app.canvas.width),
             prng.nextInt(1, app.canvas.height),
-            1,
-            1
+            size,
+            size
         );
     }
 };

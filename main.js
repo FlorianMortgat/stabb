@@ -1,4 +1,6 @@
-
+/**
+ Github: https://github.com/FlorianMortgat/stabb
+ */
 
 // TODO:
 //  - créer une classe Animation distincte de la classe Player

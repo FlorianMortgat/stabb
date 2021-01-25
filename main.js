@@ -307,11 +307,13 @@ window.app = {
             if (e.button === 0) {
                 // left mouse button
                 if (this.level.leftclick) {
-                    this.level.leftclick(x, y);
+                    this.level.leftclick({x: x, y: y});
+                } else if (this.gestionnaireClic) {
+                    this.gestionnaireClic({x: x, y: y});
                 }
             } else if (e.button === 2) {
                 if (this.level.rightclick) {
-                    this.level.rightclick(x, y);
+                    this.level.rightclick({x: x, y: y});
                 }
             }
         });

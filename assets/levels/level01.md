@@ -1,4 +1,7 @@
-#Pour commencer
+# Bienvenue
+Bienvenue dans ce jeu-découverte sur la programmation. Ce jeu ne va pas
+t’apprendre à programmer de A à Z, mais va essayer d’éveiller ta
+curiosité et ton sens de l’astuce.
 
 Pour démarrer, appuie sur la touche `F12` du clavier. Ça fera
 apparaître un panneau dans le navigateur (Firefox ou Chrome).
@@ -7,7 +10,7 @@ Ce panneau doit avoir un onglet "Console". Clique dessus : tu vas
 pouvoir commencer à coder dans cette console. Ce code sera écrit en
 **Javascript** (c'est le *langage de programmation* de ce jeu).
 
->Note bien que cette console Javascript fait partie du navigateur :
+>Cette console Javascript fait partie du navigateur :
 tu peux t'en servir sur n'importe quelle page web, pas seulement dans
 ce jeu-là.
 
@@ -16,8 +19,8 @@ Le but du jeu est de faire sortir le joueur (la bille verte) par la
 porte en prenant d’abord la clé, et sans se faire tuer par les
 ennemis (en rouge).
 
-Si jamais tu perds (écran rouge), tu peux recommencer autant de fois
-que tu veux en rechargeant la page (`F5`).
+>Si jamais tu perds, ce n’est pas grave tu peux recommencer autant de
+fois que tu veux.
 
 Pour le moment, le code ne va pas être trop compliqué.
 

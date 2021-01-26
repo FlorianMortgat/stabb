@@ -50,14 +50,27 @@ joueur.allerVersClé = function() {
 };
 ```
 
+Ce code n’appelle pas (ne lance pas) la fonction mais la crée pour qu'elle puisse
+ensuite être appelée avec `joueur.allerVersClé()`.
+
 Serais-tu capable, à partir de cet exemple, de programmer la fonction
-`joueur.allerVersÉpée` ?
+`joueur.allerVersÉpée` qui n’existe pas encore, de façon à ce qu'elle fasse aller
+le héros vers l’épée (qui s’appelle `épée`) ?
 
 À toi de jouer !!
 
-Attention : si le héros meurt, le niveau redémarre et la fonction que tu
+>Attention : si le héros meurt, le niveau redémarre et la fonction que tu
 as programmée disparait. Dans la console, tu peux utiliser la touche haut pour
 récupérer ce que tu as tapé en dernier et le modifier (c’est l’historique) :
 c’est plus pratique que de tout retaper une deuxième fois.
 
+Quand tu auras créé la fonction dans la console, démarre le jeu avec
+```
+jeu.démarrer();
+```
 
+et n’oublie pas de l’appeler avec
+
+```
+joueur.allerVersÉpée();
+```

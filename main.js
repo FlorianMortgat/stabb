@@ -278,6 +278,8 @@ window.app = {
     assetDir: 'assets',
     ready: false,
     stopped: true,
+    levels: [],
+    completedLevels: {},
     onready: () => {},
     setReady() { return this.ready = true; },
     /**
@@ -295,6 +297,7 @@ window.app = {
     installLevel(level) {
         this.level = level;
         this.level.initLevel(this);
+        this.setPrevNextAvailability();
     },
     init(root) {
         this.root = root;
@@ -338,6 +341,7 @@ window.app = {
         $.get('interface.php?get=levels', (data) => {
             this.levels = data.payload;
             this.currentLevel = 0;
+            this.completedLevels = {};
             this.loadLevel(0);
         });
     },
@@ -356,14 +360,19 @@ window.app = {
 
 
         document.querySelector('#stabb button').removeAttribute('disabled');
-
-        if (this.currentLevel === this.levels.length -1) {
-            document.querySelector('#stabb button.next').setAttribute('disabled', true);
-        }
-
-        if (this.currentLevel === 0) {
-            document.querySelector('#stabb button.prev').setAttribute('disabled', true);
-        }
+    },
+    setPrevNextAvailability() {
+        let nextBtn = document.querySelector('#stabb button.next');
+        let prevBtn = document.querySelector('#stabb button.prev');
+        let nextAvailable = (
+            this.currentLevel < this.levels.length - 1
+            && this.completedLevels[this.currentLevel]
+        );
+        console.log(this.currentLevel < this.levels.length - 1);
+        console.log(this.completedLevels[this.currentLevel]);
+        let prevAvailable = this.currentLevel > 0;
+        $(nextBtn).prop('disabled', !nextAvailable);
+        $(prevBtn).prop('disabled', !prevAvailable);
     },
     nextLevel() {
         this.currentLevel = Math.min(this.levels.length, this.currentLevel + 1);
@@ -374,10 +383,8 @@ window.app = {
         this.loadLevel(this.currentLevel);
     },
     setLevelCompleted() {
-        this.levels[this.currentLevel].completed = true;
-        if (this.currentLevel < this.levels.length -1) {
-            document.querySelector('#stabb button.next').removeAttribute('disabled');
-        }
+        this.completedLevels[this.currentLevel] = true;
+        this.setPrevNextAvailability();
     },
     initCanvasSize() {
         // if (this.stopped) return;
@@ -451,7 +458,10 @@ window.app = {
         this.characters.push(this.protagonist);
         this.drawable.push(...this.characters);
         // first update to show the "paused" game (once the assets are loaded)
-        this.onready = () => this.update();
+        this.onready = () => {
+            this.update();
+            this.onready = () => {};
+        }
     },
 
     // TODO: passer les noms de variables exposées en français ☺

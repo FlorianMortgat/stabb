@@ -349,7 +349,8 @@ window.app = {
         if (!this.stopped) this.stop();
         $.get('interface.php?get=' + this.levels[index], (data) => {
             let html = window.markdownConverter.makeHtml(data.payload.text);
-            $('.stabb .info_level > div').html(html);
+            $('#stabb .info_level > div').html(html);
+            $('#stabb .info_level').scrollTop(0);
             if (data.payload.js) {
                 let scriptTag = document.createElement('script');
                 scriptTag.type = 'application/javascript';

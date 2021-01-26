@@ -1,14 +1,14 @@
-# Bravo
+# Les fonctions
 
-Tu as réussi le niveau 1 !
+Bravo !Tu as réussi le niveau 1 !
 
 Que s’est-il passé ?
 
 Quand tu as tapé `jeu.démarrer()`, `joueur.allerVersClé()` puis
 `joueur.allerVersPorte()`, tu as fait ce qu'on appelle *appeler des fonctions*.
 
-* *appeler* = lancer (mais on n'utilise pas "lancer" pour une fonction)
-* *fonction* = une sorte de sous-programme à l'intérieur du programme
+* **appeler** = lancer (mais on n'utilise pas "lancer" pour une fonction)
+* **fonction** = une sorte de sous-programme à l'intérieur du programme
 
 Les parenthèses `()` à la fin du nom de la fonction sont très importantes : sans
 elles, la fonction n'est pas *appelée*. Essaye par exemple de taper juste le
@@ -53,9 +53,9 @@ joueur.allerVersClé = function() {
 Ce code n’appelle pas (ne lance pas) la fonction mais la crée pour qu'elle puisse
 ensuite être appelée avec `joueur.allerVersClé()`.
 
-Serais-tu capable, à partir de cet exemple, de programmer la fonction
-`joueur.allerVersÉpée` qui n’existe pas encore, de façon à ce qu'elle fasse aller
-le héros vers l’épée (qui s’appelle `épée`) ?
+Serais-tu capable, en copiant cet exemple et en modifiant juste ce qu’il faut, de
+programmer la fonction `joueur.allerVersÉpée` qui n’existe pas encore, de façon à
+ce qu'elle fasse aller le héros vers l’épée (qui s’appelle `épée`) ?
 
 À toi de jouer !!
 

@@ -12,8 +12,8 @@
                 let ennemy = new Player(
                     app,
                     app.assetDir + '/ennemy.png',
-                    500,
-                    Math.random() * 300,
+                    460 + Math.random() * 80,
+                    80 + Math.random() * 350,
                     0,
                     0,
                     prng.nextInt(1,10) / 10,

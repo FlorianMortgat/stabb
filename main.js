@@ -309,8 +309,8 @@ window.app = {
 
         this.canvas = document.createElement('canvas');
         this.canvas.addEventListener('mousedown', e => {
-            let x = e.clientX - this.rect.left;
-            let y = e.clientY - this.rect.top;
+            let x = (e.clientX - this.rect.left) * (this.canvas.width / this.canvas.offsetWidth);
+            let y = (e.clientY - this.rect.top) * (this.canvas.height / this.canvas.offsetHeight);
             if (e.button === 0) {
                 // left mouse button
                 if (this.level.leftclick) {

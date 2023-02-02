@@ -245,11 +245,11 @@ class Player {
         this.y = y;
     };
 
-    allerVersClé() {
+    goToKey() {
         this.destination(window.clé.x, window.clé.y);
     };
 
-    allerVersPorte() {
+    goToPlanet() {
         this.destination(window.porte.x, window.porte.y);
     };
 
@@ -326,6 +326,19 @@ window.app = {
         });
         this.ctx = this.canvas.getContext('2d');
         this.initCanvasSize();
+
+        this.ctx.fillStyle = '#020202';
+        this.clear();
+        prng.init();
+        randomDots('#211414', 800, 2);
+        randomDots('#333', 500, 2);
+        randomDots('#808080', 90, 2);
+
+        this.bgCanvas = document.createElement('canvas');
+        this.bgCanvas.width = this.canvas.width;
+        this.bgCanvas.height = this.canvas.height;
+        this.bgCtx = this.bgCanvas.getContext('2d');
+        this.bgCtx.drawImage(this.canvas, 0, 0);
         // window.addEventListener('resize', () => {
         //     // this.initCanvasSize();
         // });
@@ -407,11 +420,10 @@ window.app = {
      */
     update() {
         if (!this.ready) throw 'update while not ready';
-        this.ctx.fillStyle = '#222';
         let now = Date.now(); // TODO: se débarrasser du now (toutes les durées seront calculées
                               //       en fonction de this.refreshRate)
-        this.clear();
-        // randomDots('#232', 5000, 2);
+
+        this.ctx.drawImage(this.bgCanvas, 0, 0);
         this.detectEnnemyCollisions();
         
         // hook pour les niveaux
@@ -438,7 +450,7 @@ window.app = {
 
         window.joueur = this.protagonist = new Player(
             this,
-            this.assetDir + '/hero.png',
+            this.assetDir + '/player.png',
             this.canvas.width / 2,
             this.canvas.height / 2,
             this.canvas.width / 2,
@@ -518,7 +530,7 @@ function main() {
     window.markdownConverter = new showdown.Converter();
     app.init(document.body);
     window.jeu = app;
-    jeu.démarrer = jeu.run;
+    jeu.start = jeu.run;
     // window.sélectionnerJoueur = i => app.selectPlayer(i);
     window.stop = app.stop;
 }
@@ -556,12 +568,13 @@ function encode(clear, n = 34) {
  * @param {int} max 
  */
 function GeneFiboPRNG(seed = 484, max = 4294967296) {
+    const initialSeed = seed % max;
     this.max = max;
-    this.seed = seed % max;
-    let state = this.state = [max>>3, 11, 3001, 0, 975111, 78, seed];
+    this.seed = initialSeed;
+    const state = [];
     let current = seed;
     this.next = () => {
-        let x = (current + this.state.shift()) % max;
+        let x = (current + state.shift()) % max;
         state.push(x);
         current = x;
         return x / max;
@@ -575,10 +588,16 @@ function GeneFiboPRNG(seed = 484, max = 4294967296) {
         for (let i = 0; i < x; i++) ret.push(this.next());
         return ret;
     }
-    for (let i = 0; i < 150; i++) this.next();
+    this.init = () => {
+        current = initialSeed;
+        state.splice(0, state.length, max>>3, 11, 3001, 0, 975111, 78, initialSeed);
+        for (let i = 0; i < 150; i++) this.next();
+    }
+    this.init();
 }
 
-let prng = new GeneFiboPRNG();
+let prng = new GeneFiboPRNG(Date.now());
+console.log(prng.nextX(10));
 Array.prototype.choice = function () {
     return this[prng.nextInt(0, this.length - 1)];
 };

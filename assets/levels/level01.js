@@ -35,7 +35,7 @@ window.app.installLevel({
         );
         app.door = new StaticObject(
             app,
-            app.assetDir + '/door.png',
+            app.assetDir + '/planet.png',
             45,
             306,
             90,

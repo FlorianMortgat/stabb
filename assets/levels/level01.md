@@ -15,8 +15,8 @@ tu peux t'en servir sur n'importe quelle page web, pas seulement dans
 ce jeu-là.
 
 
-Le but du jeu est de faire sortir le joueur (la bille verte) par la
-porte en prenant d’abord la clé, et sans se faire tuer par les
+Le but du jeu est de faire atterrir le joueur (le vaisseau) sur la
+planète en prenant d’abord la clé, et sans se faire tuer par les
 ennemis (en rouge).
 
 >Si jamais tu perds, ce n’est pas grave tu peux recommencer autant de
@@ -26,13 +26,13 @@ Pour le moment, le code ne va pas être trop compliqué.
 
 Pour démarrer le jeu, dans la console, tape :
 ```
-jeu.démarrer();
+jeu.start();
 ```
 
 Ensuite, toujours dans la console, tape :
 
 ```
-joueur.allerVersClé();
+joueur.goToKey();
 ```
 
 puis appuie sur Entrée.
@@ -46,7 +46,7 @@ le rond vert de se déplacer vers la clé.
 Une fois que le personnage a pris la clé :
 
 ```
-joueur.allerVersPorte();
+joueur.goToPlanet();
 ```
 
 Lorsque le joueur aura atteint la porte, tu auras gagné et le code

@@ -38,7 +38,7 @@ jeu.gestionnaireClic = function (clic) {
 
 Quand tu auras créé la fonction dans la console, démarre le jeu avec
 ```
-jeu.démarrer();
+jeu.start();
 ```
 
 Puis clique là où tu veux que le héros aille.
